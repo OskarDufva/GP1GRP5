@@ -30,6 +30,7 @@ public class CameraController : MonoBehaviour
     {
         Move();
         Zoom();
+        Rotate();
     }
 
     // Adds camera movement with wasd and arrow keys
@@ -62,5 +63,15 @@ public class CameraController : MonoBehaviour
     public void FocusOnPosition(Vector3 pos)
     {
         transform.position = pos;
+    }
+
+    void Rotate()       
+    {
+        float rotation = 0;
+        if (Input.GetKey(KeyCode.E))
+            rotation -= 1;
+        if (Input.GetKey(KeyCode.Q))
+            rotation += 1;
+        transform.Rotate(0, rotation * rotateSpeed * Time.deltaTime, 0);
     }
 }
