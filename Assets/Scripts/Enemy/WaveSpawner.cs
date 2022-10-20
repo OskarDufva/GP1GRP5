@@ -19,6 +19,7 @@ public class WaveSpawner : MonoBehaviour
     public GameManager gameManager;
 
     private int waveIndex = 0;
+    private int enemies = 0;
 
 
     // Update is called once per frame
@@ -51,22 +52,33 @@ public class WaveSpawner : MonoBehaviour
 
     IEnumerator SpawnWave()
     {
+        //Debug.Log("Wave Incoming");
+        Wave wave = waves[waveIndex];
+        EnemyBlueprint eb = enemies[enemyIndex];
+
+        for (int a = 0; a < wave.waveCount; a++)
+        {
+            yield return new WaitForSeconds(1f / wave.waveRate);
+
+            for (int i = 0; i < eb.enemyCount; i++)
+            {
+                SpawnEnemy(eb.enemy);
+                yield return new WaitForSeconds(1f / eb.enemyRate);
+            }
+        }
+
+        waveIndex++;
         PlayerStats.Rounds++;
 
-        Wave wave = waves[waveIndex];
-
-        enemiesAlive = wave.count;
-
-        for (int i = 0; i < wave.count; i++)
+        if (waveIndex == waves.Length)
         {
-            SpawnEnemy(wave.enemy);
-            yield return new WaitForSeconds(1f / wave.rate);
-        }  
-        waveIndex++;
+            Debug.Log("LEVEL WON!");
+            this.enabled = false;
+        }
     }
 
-    void SpawnEnemy(GameObject enemy)
+    void SpawnEnemy(GameObject eb)
     {
-        Instantiate(enemy, spawnPoint.position, spawnPoint.rotation);
+        Instantiate(eb, spawnPoint.position, spawnPoint.rotation);
     }
 }
